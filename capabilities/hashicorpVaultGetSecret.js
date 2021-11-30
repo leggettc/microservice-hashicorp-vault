@@ -25,7 +25,6 @@ const url = require('url');
 const hashicorpVaultGetSecret = async ({companyId,flowId,interactionId,parameters,properties}) => {
     try {
 
-
         const {
             hvHostNameConnectionProperty,
             hvSecretPathConnectionProperty,
@@ -65,6 +64,8 @@ const getVaultToken = async (vaultBaseURL, username ,password) => {
         "password": password
     };
   
+    console.log(params);
+    
     return axios.post(vaultBaseURL + "/v1/auth/userpass/login/" + username,
       {
         params: params

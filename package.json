@@ -1,13 +1,15 @@
 {
   "name": "microservice-hashicorp-vault",
   "version": "1.0.0",
-  "description": "",
+  "description": "This project serves as a very simple example of how to quickly get started developing functionality for PingIdentity orchestration platform",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "pkg package.json --output sk-app"
   },
-  "bin": "index.js",
+  "bin": {
+    "microservice-hashicorp-vault": "index.js"
+  },
   "pkg": {
     "assets": [
       "node_modules/**/*",
@@ -21,5 +23,14 @@
   "license": "ISC",
   "dependencies": {
     "@skinternal/skconnectorsdk": "latest"
-  }
+  },
+  "devDependencies": {},
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/leggettc/microservice-hashicorp-vault.git"
+  },
+  "bugs": {
+    "url": "https://github.com/leggettc/microservice-hashicorp-vault/issues"
+  },
+  "homepage": "https://github.com/leggettc/microservice-hashicorp-vault#readme"
 }
