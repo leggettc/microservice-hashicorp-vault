@@ -1,0 +1,165 @@
+{
+  "connectorId": "hashicorpVaultConnector",
+  "name": "Hashicorp Vault",
+  "serviceName": "microservice-hashicorp-vault",
+  "connectorType": "policy",
+  "description": "Use Hashicorp Vault for managing secrets.",
+  "connectorDetails": null,
+  "detailImage": null,
+  "connectorCategories": [
+    {
+      "name": "Data",
+      "value": "hashicorpVaultConnector"
+    }
+  ],
+  "metadata": {
+    "colors": {
+      "canvas": "#b82330",
+      "canvasText": "#000000"
+    },
+    "logos": {
+      "canvas": {
+        "imageFileName": "flow-connector.svg"
+      }
+    }
+  },
+  "sections": [
+    {
+      "name": "General",
+      "value": "general",
+      "default": true
+    }
+  ],
+  "flowSections": [
+    {
+      "name": "General",
+      "value": "general"
+    }
+  ],
+  "properties": {
+    "hvHostNameConnectionProperty": {
+      "displayName": "Hashicorp Vault Hostname",
+      "preferredControlType": "textField",
+      "required": true,
+      "developerNotes": "Host Name of your Vault instance."
+    },
+    "hvSecretPathConnectionProperty": {
+      "displayName": "Hashicorp Vault Path",
+      "preferredControlType": "textField",
+      "required": true,
+      "developerNotes": "Base path of your secret engines."
+    },
+    "hvUsernameConnectionProperty": {
+      "displayName": "Hashicorp Vault User Name",
+      "preferredControlType": "textField",
+      "required": true,
+      "developerNotes": "Username to access hashicorp vault."
+    },        
+    "hvPasswordConnectionProperty": {
+      "displayName": "Hashicorp Vault Password",
+      "preferredControlType": "textField",
+      "required": true,
+      "hashedVisibility" : true,
+      "developerNotes": "Password to access hashicorp vault."
+    },  
+    "hvSecretNameProperty": {
+      "displayName": "Secret Name",
+      "preferredControlType": "textField",
+      "required": true,
+      "developerNotes": "Name of the secret being retrieved."
+    },        
+    "exampleTextConnectionProperty": {
+      "displayName": "exampleTextConnectionProperty",
+      "preferredControlType": "textField",
+      "required": true,
+      "developerNotes": "This property will be used to convey a configuration value for the connection across all capabilities"
+    },
+    "exampleStaticConnectionProperty": {
+      "displayName": "exampleStaticConnectionProperty",
+      "preferredControlType": "none",
+      "required": true,
+      "value": [{"value1": "exampleStaticValue","deleteAllowed":false}]
+    },
+    "exampleDropDownConnectionPropery": {
+      "preferredControlType": "dropDown",
+      "developerNotes": "You don't *need* to provide display name"
+    },
+    "exampleToggleConnectionProperty": {
+      "preferredControlType": "toggleSwitch"
+    },
+    "exampleTextArea": {
+      "preferredControlType": "textArea"
+    }
+  },
+  "capabilities": {
+    "start": {
+      "type": "trigger",
+      "title": "Get secret",
+      "subTitle": "Retrieve a secret from the Key/Value v2 secret engine.",
+      "inputs": [],
+      "respondToUser": false,
+      "userViews": [],
+      "flowConfigView": {
+        "items": [
+          {
+            "propertyName": "hvSecretNameProperty"
+          }
+        ]
+      },
+      "localizedErrors": {
+        "en": {
+          "initializeError": "Hashicorp Vault capability error"
+        }
+      },
+      "payloadInputSchema": {
+        "default": {
+          "type": "object",
+          "properties": {
+            "properties": {
+              "type": "object",
+              "properties": {
+                "exampleCapabilityProperty": {
+                  "type": "string",
+                  "description": "Example Input Property"
+                }
+              },
+              "additionalProperties": true,
+              "required": [
+                "exampleCapabilityProperty"
+              ]
+            }
+          },
+          "example": {
+            "properties": {
+              "exampleCapabilityProperty": "This is an example of an input value that you help you -the administrator- to figure out what to put down here"
+            }
+          }
+        }
+      },
+      "localOutputSchema": {
+        "output": {
+          "type": "object",
+          "example": {
+            "success": "true"
+          },
+          "properties": {
+            "success": {
+              "type": "boolean"
+            }
+          },
+          "required": [
+            "success"
+          ]
+        }
+      }
+    }
+  },
+  "accountConfigView": {
+    "items": [
+      {"propertyName": "hvHostNameCapabilityProperty"},
+      {"propertyName": "hvSecretPathConnectionProperty"},
+      {"propertyName": "hvUsernameConnectionProperty"},
+      {"propertyName": "hvPasswordConnectionProperty"}
+    ]
+  }
+}

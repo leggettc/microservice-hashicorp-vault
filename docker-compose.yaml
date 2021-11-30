@@ -1,0 +1,26 @@
+version: "2.4"
+
+services:
+  manifest-updater:
+    image: art01.corp.pingidentity.com:5100/singularkey/manifest-updater
+    command: node index.js
+    environment:
+      - DB_URL=mongodb://mongo:27017/dev_singularKey
+    volumes:
+      - ./manifest.json:/tmp/manifest.json
+    networks:
+      - local_sk-net-backends
+
+  microservice-hashicorp-vault:
+    image: microservice-hashicorp-vault:latest
+    networks:
+      - local_sk-net-backends
+    env_file:
+      - ${HOME}/projects/skdev/dev-setup/local/sk.env
+      - ${HOME}/projects/skdev/dev-setup/local/aws.env
+      - ${HOME}/projects/skdev/dev-setup/local/node.env
+
+networks:
+  local_sk-net-backends:
+    external: true
+ 
