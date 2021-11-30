@@ -1,5 +1,8 @@
+/**
+ * Hashicorp Vault Connector
+ */
 const sdk = require('@skinternal/skconnectorsdk')
-const {serr, compileErr, logger} = require('@skinternal/skconnectorsdk')
+const {logger} = require('@skinternal/skconnectorsdk')
 const {
   hashicorpVaultGetSecret,
 } = require('./capabilities');
@@ -8,7 +11,6 @@ const redisList = 'hashicorp-vault'
 
 const registerCapabilities = () => {
   sdk.methods.handle_capability_hashicorpVaultGetSecreet = hashicorpVaultGetSecret;
-
 }
 
 /**

@@ -1,5 +1,6 @@
 {
   "connectorId": "hashicorpVaultConnector",
+  "_id": "hashicorpVaultConnector",
   "name": "Hashicorp Vault",
   "serviceName": "microservice-hashicorp-vault",
   "connectorType": "policy",
@@ -9,7 +10,7 @@
   "connectorCategories": [
     {
       "name": "Data",
-      "value": "hashicorpVaultConnector"
+      "value": "data"
     }
   ],
   "metadata": {

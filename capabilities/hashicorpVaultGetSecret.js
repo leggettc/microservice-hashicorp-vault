@@ -7,7 +7,7 @@ const url = require('url');
 /**
  * hashicorpVaultGetSecret - Hashicorp Vault Connector - Get Secret capability
  * *
- * Take the following configuration
+ * Take the following configuration:
  *   vaultHostName          https://vault.example.com
  *   vaultSecretBasePath    /secrets
  *   username               bob
@@ -25,6 +25,8 @@ const url = require('url');
 const hashicorpVaultGetSecret = async ({companyId,flowId,interactionId,parameters,properties}) => {
     try {
 
+        logger.info(properties);
+
         const {
             hvHostNameConnectionProperty,
             hvSecretPathConnectionProperty,
@@ -35,6 +37,7 @@ const hashicorpVaultGetSecret = async ({companyId,flowId,interactionId,parameter
 
             const body = res.data;
             const vaulttoken = body.auth.client_token;
+
 
             console.log("....Retrieved the Vault Token....");
             console.log("Vault Token: " + vaulttoken);
@@ -71,3 +74,7 @@ const getVaultToken = async (vaultBaseURL, username ,password) => {
         params: params
     })
   }
+
+  module.exports = {
+    hashicorpVaultGetSecret,
+  };
