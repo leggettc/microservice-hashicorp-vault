@@ -1,10 +1,14 @@
 const sdk = require('@skinternal/skconnectorsdk')
 const {serr, compileErr, logger} = require('@skinternal/skconnectorsdk')
+const {
+  hashicorpVaultGetSecret,
+} = require('./capabilities');
+
 const redisList = 'hashicorp-vault'
 
-sdk.methods.handle_capability_start = async (input) =>{
-  // do something here
-  console.log(input)
+const registerCapabilities = () => {
+  sdk.methods.handle_capability_hashicorpVaultGetSecreet = hashicorpVaultGetSecret;
+
 }
 
 /**
@@ -12,6 +16,7 @@ sdk.methods.handle_capability_start = async (input) =>{
  */
 const initialize = async () =>{
   try {
+    registerCapabilities();
     const response = await sdk.initalize(redisList)
     console.log(response)
     logger.info('Started microservice-hashicorp-vault');
