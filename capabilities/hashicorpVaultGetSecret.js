@@ -1,4 +1,4 @@
-//const vaultUtils = require('./common/vaultUtils');
+const vaultUtils = require('./common/vaultUtils');
 const {logger} = require('@skinternal/skconnectorsdk')
 
 const axios = require('axios');
@@ -29,23 +29,25 @@ const hashicorpVaultGetSecret = async ({companyId,flowId,interactionId,parameter
 
         const {
             hvHostNameConnectionProperty,
-            hvSecretPathConnectionProperty,
             hvUsernameConnectionProperty,
-            hvPasswordConnectionProperty } = properties;
+            hvPasswordConnectionProperty,
+            hvSecretPathProperty,
+            hvSecretNameProperty,
+            hvSecretVersionProperty } = properties;
 
-            var res = await getVaultToken(hvHostNameConnectionProperty, hvUsernameConnectionProperty, hvPasswordConnectionProperty);
+        var res = await vaultUtils.getVaultToken(hvHostNameConnectionProperty, hvUsernameConnectionProperty, hvPasswordConnectionProperty);
 
-            const body = res.data;
-            const vaulttoken = body.auth.client_token;
+        // extract the vault token
+        const authBody = res.data;
+        const vaultToken = authBody.auth.client_token;
 
-
-            console.log("....Retrieved the Vault Token....");
-            console.log("Vault Token: " + vaulttoken);
+        var res = await getSecret(hvHostNameConnectionProperty, vaultToken, hvSecretPathProperty, hvSecretNameProperty, hvSecretVersionProperty )
+        const secretBody = res.data.data;
 
     return {
         output: {
-        secretName: secretName,
-        secretValue: secretValue
+            secretName: hvSecretNameProperty,
+            secretData: secretBody
         }
     }
     } catch (err) {
@@ -57,24 +59,23 @@ const hashicorpVaultGetSecret = async ({companyId,flowId,interactionId,parameter
         eventName: 'continue',
         };
     }
-    throw compileErr('authenticateUser', err);
+    throw compileErr('getSecret', err);
     }
 }
 
-const getVaultToken = async (vaultBaseURL, username ,password) => {
+const getSecret = async ( vaultBaseURL, vaultAuthToken, secretPath, secretName, vaultVersion ) => {
 
-    const params = {
-        "password": password
-    };
-  
-    console.log(params);
-    
-    return axios.post(vaultBaseURL + "/v1/auth/userpass/login/" + username,
-      {
-        params: params
-    })
-  }
+    var vaultSecretURL = vaultBaseURL + "/v1/secret/data/" + secretPath + "/" + secretName;
 
-  module.exports = {
+    if(vaultVersion != null){
+        vaultSecretURL = vaultSecretURL + "?version=" + vaultVersion;
+    }
+
+    return axios.get(vaultSecretURL, { headers: { "X-VAULT-TOKEN": vaultAuthToken } });
+
+}
+
+
+module.exports = {
     hashicorpVaultGetSecret,
-  };
+};

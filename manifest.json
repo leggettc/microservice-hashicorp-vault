@@ -20,7 +20,7 @@
     },
     "logos": {
       "canvas": {
-        "imageFileName": "flow-connector.svg"
+        "imageFileName": "pingIdentity.svg"
       }
     }
   },
@@ -44,12 +44,24 @@
       "required": true,
       "developerNotes": "Host Name of your Vault instance."
     },
-    "hvSecretPathConnectionProperty": {
+    "hvSecretPathProperty": {
       "displayName": "Hashicorp Vault Path",
       "preferredControlType": "textField",
       "required": true,
       "developerNotes": "Base path of your secret engines."
     },
+    "hvSecretVersionProperty": {
+      "displayName": "Hashicorp Vault Secret Version",
+      "preferredControlType": "textField",
+      "required": false,
+      "developerNotes": "Version number for your secret. If blank, then defaults to the latest."
+    },    
+    "hvSecretDataProperty": {
+      "displayName": "Hashicorp Vault Secret Data",
+      "preferredControlType": "textField",
+      "required": false,
+      "developerNotes": "Secret data that is associated with a secret. Should be in json format."
+    },    
     "hvUsernameConnectionProperty": {
       "displayName": "Hashicorp Vault User Name",
       "preferredControlType": "textField",
@@ -60,7 +72,6 @@
       "displayName": "Hashicorp Vault Password",
       "preferredControlType": "textField",
       "required": true,
-      "hashedVisibility" : true,
       "developerNotes": "Password to access hashicorp vault."
     },  
     "hvSecretNameProperty": {
@@ -68,42 +79,26 @@
       "preferredControlType": "textField",
       "required": true,
       "developerNotes": "Name of the secret being retrieved."
-    },        
-    "exampleTextConnectionProperty": {
-      "displayName": "exampleTextConnectionProperty",
-      "preferredControlType": "textField",
-      "required": true,
-      "developerNotes": "This property will be used to convey a configuration value for the connection across all capabilities"
-    },
-    "exampleStaticConnectionProperty": {
-      "displayName": "exampleStaticConnectionProperty",
-      "preferredControlType": "none",
-      "required": true,
-      "value": [{"value1": "exampleStaticValue","deleteAllowed":false}]
-    },
-    "exampleDropDownConnectionPropery": {
-      "preferredControlType": "dropDown",
-      "developerNotes": "You don't *need* to provide display name"
-    },
-    "exampleToggleConnectionProperty": {
-      "preferredControlType": "toggleSwitch"
-    },
-    "exampleTextArea": {
-      "preferredControlType": "textArea"
     }
   },
   "capabilities": {
-    "start": {
-      "type": "trigger",
-      "title": "Get secret",
-      "subTitle": "Retrieve a secret from the Key/Value v2 secret engine.",
+    "hashicorpVaultStoreSecret" : {
+      "type": "action",
+      "title": "Create secret",
+      "subTitle": "Create a secret from the Key/Value v2 secret engine.",
       "inputs": [],
       "respondToUser": false,
       "userViews": [],
       "flowConfigView": {
         "items": [
           {
+            "propertyName": "hvSecretPathProperty"
+          },
+          {
             "propertyName": "hvSecretNameProperty"
+          },
+          {
+            "propertyName": "hvSecretDataProperty"
           }
         ]
       },
@@ -119,20 +114,33 @@
             "properties": {
               "type": "object",
               "properties": {
-                "exampleCapabilityProperty": {
+                "hvUsernameConnectionProperty": {
                   "type": "string",
-                  "description": "Example Input Property"
-                }
+                  "description": "User name used to access vault."
+                },
+                "hvPasswordConnectionProperty": {
+                  "type": "string",
+                  "description": "Password used to access vault."
+                },
+                "hvSecretDataProperty": {
+                  "type": "object",
+                  "description": "Password used to access vault."                
               },
               "additionalProperties": true,
               "required": [
-                "exampleCapabilityProperty"
+                "hvUsernameConnectionProperty",
+                "hvPasswordConnectionProperty",
+                "hvSecretDataProperty"
               ]
             }
           },
           "example": {
             "properties": {
-              "exampleCapabilityProperty": "This is an example of an input value that you help you -the administrator- to figure out what to put down here"
+              "hvUsernameConnectionProperty": "singularkey",
+              "hvPasswordConnectionProperty": "password",
+              "hvSecretDataProperty": {
+                "foo" : "bar"
+              }
             }
           }
         }
@@ -141,15 +149,98 @@
         "output": {
           "type": "object",
           "example": {
-            "success": "true"
+            "secretVersion":"1"
           },
           "properties": {
-            "success": {
-              "type": "boolean"
+            "secretVersion" : {
+              "type": "string"
             }
           },
           "required": [
-            "success"
+            "secretVersion"
+          ]
+        }
+      }      
+    },
+    "hashicorpVaultGetSecret": {
+      "type": "trigger",
+      "title": "Get secret",
+      "subTitle": "Retrieve a secret from the Key/Value v2 secret engine.",
+      "inputs": [],
+      "respondToUser": false,
+      "userViews": [],
+      "flowConfigView": {
+        "items": [
+          {
+            "propertyName": "hvSecretPathProperty"
+          },
+          {
+            "propertyName": "hvSecretNameProperty"
+          }, 
+          {
+            "propertyName": "hvSecretVersionProperty"
+          }
+        ]
+      },
+      "localizedErrors": {
+        "en": {
+          "initializeError": "Hashicorp Vault capability error"
+        }
+      },
+      "payloadInputSchema": {
+        "default": {
+          "type": "object",
+          "properties": {
+            "properties": {
+              "type": "object",
+              "properties": {
+                "hvUsernameConnectionProperty": {
+                  "type": "string",
+                  "description": "User name used to access vault."
+                },
+                "hvPasswordConnectionProperty": {
+                  "type": "string",
+                  "description": "Password used to access vault."
+                }                
+              },
+              "additionalProperties": true,
+              "required": [
+                "hvUsernameConnectionProperty",
+                "hvPasswordConnectionProperty"
+              ]
+            }
+          },
+          "example": {
+            "properties": {
+              "hvUsernameConnectionProperty": "singularkey",
+              "hvPasswordConnectionProperty": "password"
+            }
+          }
+        }
+      },
+      "localOutputSchema": {
+        "output": {
+          "type": "object",
+          "example": {
+            "secretName": "foo",
+            "secretData": {
+              "foo": "bar"
+            },
+            "secretVersion":"1"
+          },
+          "properties": {
+            "secretName": {
+              "type": "string"
+            },
+            "secretData" : {
+              "type":"object"
+            },
+            "secretVersion" : {
+              "type": "string"
+            }
+          },
+          "required": [
+            "secretName"
           ]
         }
       }
@@ -157,8 +248,7 @@
   },
   "accountConfigView": {
     "items": [
-      {"propertyName": "hvHostNameCapabilityProperty"},
-      {"propertyName": "hvSecretPathConnectionProperty"},
+      {"propertyName": "hvHostNameConnectionProperty"},
       {"propertyName": "hvUsernameConnectionProperty"},
       {"propertyName": "hvPasswordConnectionProperty"}
     ]
